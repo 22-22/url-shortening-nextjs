@@ -1,11 +1,14 @@
-import { Menu } from './contents'
+import { MENU } from './contents'
 
 const Navigation = () => {
     return (
         <nav>
-            <ul className="flex gap-8">
-                {Menu.map(({ name }) => (
-                    <li key={name} className="font-semibold text-gray-500">
+            <ul className="flex gap-4">
+                {MENU.map(({ name }) => (
+                    <li
+                        key={name}
+                        className="px-4 py-2 font-semibold text-gray-500"
+                    >
                         {name}
                     </li>
                 ))}
