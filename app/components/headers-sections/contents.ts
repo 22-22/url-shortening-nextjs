@@ -1,5 +1,5 @@
-export const MENU: { name: string }[] = [
-    { name: 'Features' },
-    { name: 'Pricing' },
-    { name: 'Resources' },
+export const MENU = [
+    { name: 'Features', href: '' },
+    { name: 'Pricing', href: '' },
+    { name: 'Resources', href: '' },
 ]
