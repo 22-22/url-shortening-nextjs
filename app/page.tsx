@@ -4,6 +4,8 @@ import UrlFormSection from './components/main-sections/UrlFormSection'
 import StatsSection from './components/main-sections/StatsSection'
 import BoostSection from './components/main-sections/BoostSection'
 import Footer from './components/footer-sections/Footer'
+import DisplayUrl from './components/main-sections/DisplayUrl'
+import { UrlProvider } from './components/Context'
 
 export default function Home() {
     return (
@@ -11,7 +13,10 @@ export default function Home() {
             <Header />
             <main>
                 <GetStartedSection />
-                <UrlFormSection />
+                <UrlProvider>
+                    <UrlFormSection />
+                    <DisplayUrl />
+                </UrlProvider>
                 <StatsSection />
                 <BoostSection />
             </main>

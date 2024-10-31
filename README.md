@@ -7,8 +7,10 @@ D. created public folder for images
 
 QUESTIONS:
 
-1. semantic html tags in footer elements?
-2. is it a good practice to hide elements on mobile view like this: className="hidden sm:block"?
+1. What's the best way to submit a form with NextJS app router? What's the best option for a state management nowadays?
+   (for such a small app like this one and for bigger ones)?
+2. How to prevent a form height from jumping when an error message occurs (that an input in empty)?
+3. is it a good practice to hide elements on mobile view like this: className="hidden sm:block"?
 
 WHAT I LEARNED:
 
@@ -48,4 +50,20 @@ aria-labelledby="statistics"
 
 <h2 className="sr-only">Footer</h2>
 
-TODO: change svg fill on hover
+FORMDATA === looks like it makes sense to use it for a more complicated inputs than just one text field
+with TS:
+const dformdata = new FormData(event.currentTarget);
+data.get("url");
+also looks like it can be used instead of useState (avoid constant rerenders)
+
+encodeURI
+const uri = 'https://mozilla.org/?x=шеллы';
+const encoded = encodeURI(uri);
+console.log(encoded);
+// Expected output: "https://mozilla.org/?x=%D1%88%D0%B5%D0%BB%D0%BB%D1%8B"
+
+ISSUES:
+
+couldn't add a "required" html attribute to react custom validation
+because it was showing an error (a red border around an input) when it was empty
+even if it was on initial render, before the user started typing something.

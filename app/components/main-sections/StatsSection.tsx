@@ -5,8 +5,8 @@ import fullyCustomIcon from '../../../public/images/icon-fully-customizable.svg'
 
 const StatsSection = () => {
     return (
-        <section className="flex flex-col items-center bg-gray-200 px-10 py-20 sm:px-40">
-            <h2 className="mt-16 text-4xl font-extrabold text-indigo-950">
+        <section className="flex flex-col items-center bg-gray-200 px-10 pb-20 pt-14 sm:px-40 sm:pt-32">
+            <h2 className="text-4xl font-extrabold text-indigo-950">
                 Advanced Statistics
             </h2>
             <p className="mt-4 max-w-sm text-center font-semibold text-gray-500">
