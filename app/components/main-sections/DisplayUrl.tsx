@@ -8,7 +8,7 @@ const DisplayUrl = () => {
     const copyText = (evt: React.MouseEvent, idx: number) => {
         const button = evt.target as HTMLButtonElement
         navigator.clipboard.writeText(button.value)
-        setCopiedUrls((prevState) => [...prevState, idx])
+        setCopiedUrls([...copiedUrls, idx])
     }
     const checkIfCopied = (idx: number) => {
         return copiedUrls.includes(idx)
