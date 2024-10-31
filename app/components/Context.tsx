@@ -12,7 +12,7 @@ interface IUrls {
     shortUrl: string
 }
 interface IContext {
-    urlsData: IUrls[]
+    urlsData: IUrls[] | null
     addUrl: (urlsObj: IUrls) => void
 }
 
@@ -23,16 +23,25 @@ const UrlContext = createContext<IContext | null>(null)
 const LocalStorageUrlsKey = 'urlsArray'
 
 export const UrlProvider = ({ children }: UrlProviderProps) => {
-    const [urlsData, setUrlsData] = useState<IUrls[]>(() => {
-        const savedUrls = localStorage.getItem(LocalStorageUrlsKey)
-        return savedUrls ? JSON.parse(savedUrls) : []
-    })
+    const [urlsData, setUrlsData] = useState<IUrls[] | null>(null)
+
     useEffect(() => {
-        localStorage.setItem(LocalStorageUrlsKey, JSON.stringify(urlsData))
+        const storedData = localStorage.getItem(LocalStorageUrlsKey)
+        if (storedData) {
+            setUrlsData(JSON.parse(storedData))
+        }
+    }, [])
+
+    useEffect(() => {
+        if (urlsData) {
+            localStorage.setItem(LocalStorageUrlsKey, JSON.stringify(urlsData))
+        }
     }, [urlsData])
 
     const addUrl = (urlsObj: IUrls) => {
-        setUrlsData((prevState) => [...prevState, urlsObj])
+        if (urlsData) {
+            setUrlsData([...urlsData, urlsObj])
+        }
     }
 
     return (
