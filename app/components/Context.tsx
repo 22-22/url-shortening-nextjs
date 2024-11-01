@@ -12,18 +12,21 @@ interface IUrls {
     shortUrl: string
 }
 interface IContext {
-    urlsData: IUrls[] | null
+    urlsData: IUrls[]
     addUrl: (urlsObj: IUrls) => void
 }
 
 interface UrlProviderProps {
     children: ReactNode
 }
-const UrlContext = createContext<IContext | null>(null)
+const UrlContext = createContext<IContext>({
+    urlsData: [],
+    addUrl: () => {},
+})
 const LocalStorageUrlsKey = 'urlsArray'
 
 export const UrlProvider = ({ children }: UrlProviderProps) => {
-    const [urlsData, setUrlsData] = useState<IUrls[] | null>(null)
+    const [urlsData, setUrlsData] = useState<IUrls[]>([])
 
     useEffect(() => {
         const storedData = localStorage.getItem(LocalStorageUrlsKey)

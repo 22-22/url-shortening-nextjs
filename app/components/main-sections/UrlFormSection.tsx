@@ -2,13 +2,15 @@
 import { FormEvent, useState } from 'react'
 import { useUrlContext } from '../Context'
 
+const emptyInputError = 'Please add a link.'
+
 const UrlFormSection = () => {
     const context = useUrlContext()
     const [url, setUrl] = useState('')
-    const [error, setError] = useState(false)
+    const [error, setError] = useState('')
 
     const handleInputChange = (url: string) => {
-        setError(false)
+        setError('')
         setUrl(url)
     }
 
@@ -16,7 +18,8 @@ const UrlFormSection = () => {
         event.preventDefault()
 
         if (!url.trim()) {
-            setError(true)
+            setError(emptyInputError)
+            return
         }
 
         const response = await fetch('api', {
@@ -26,6 +29,10 @@ const UrlFormSection = () => {
         })
         const result = await response.json()
 
+        if (result.error) {
+            setError(result.error)
+            return
+        }
         const urlsToStore = {
             originalUrl: url,
             shortUrl: result.result_url as string,
@@ -62,7 +69,7 @@ const UrlFormSection = () => {
                 </div>
                 {error && (
                     <p className="text-sm font-semibold italic text-red-500">
-                        Please add a link.
+                        {error}
                     </p>
                 )}
             </form>
