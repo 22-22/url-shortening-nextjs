@@ -12,6 +12,7 @@ export async function POST(request: Request) {
             },
             body: JSON.stringify(requestData),
         })
+        // const textResponse = await externalResponse.text(); // Get raw text for debugging
         const urlsData = await externalResponse.json()
         return NextResponse.json(urlsData)
     } catch (error) {

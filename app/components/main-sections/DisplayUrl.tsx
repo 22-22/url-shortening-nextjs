@@ -1,10 +1,32 @@
 'use client'
-import { useState } from 'react'
-import { useUrlContext } from '../Context'
+import { useEffect, useState } from 'react'
+import { useQueryClient, useQuery } from '@tanstack/react-query'
+import { localStorageUrlsKey, urlsMutationKey } from './constants'
+import { IUrls } from '@/app/types'
+
+export const useUrls = () => {
+    return useQuery({
+        queryKey: [urlsMutationKey],
+        queryFn: async () => {
+            const response = await fetch('/api')
+            if (!response.ok) throw new Error('Failed to fetch urls')
+            return response.json()
+        },
+    })
+}
 
 const DisplayUrl = () => {
-    const context = useUrlContext()
+    const queryClient = useQueryClient()
+    const { data } = useUrls()
     const [copiedUrls, setCopiedUrls] = useState<number[]>([])
+
+    useEffect(() => {
+        const storedData = localStorage.getItem(localStorageUrlsKey)
+        if (storedData) {
+            queryClient.setQueryData([urlsMutationKey], JSON.parse(storedData))
+        }
+    }, [queryClient])
+
     const copyText = (evt: React.MouseEvent, idx: number) => {
         const button = evt.target as HTMLButtonElement
         navigator.clipboard.writeText(button.value)
@@ -15,9 +37,9 @@ const DisplayUrl = () => {
     }
     return (
         <section className="bg-gray-200">
-            {context?.urlsData && (
+            {data && (
                 <ul className="px-10 pt-28 sm:px-40 sm:pt-16">
-                    {context.urlsData.map((urls, idx) => (
+                    {data.map((urls: IUrls, idx: number) => (
                         <li
                             key={idx}
                             className="mt-3 text-wrap rounded-md bg-white px-10 py-3 sm:flex sm:items-center sm:justify-between"

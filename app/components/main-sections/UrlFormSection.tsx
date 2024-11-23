@@ -1,13 +1,49 @@
 'use client'
 import { FormEvent, useState } from 'react'
-import { useUrlContext } from '../Context'
-
-const emptyInputError = 'Please add a link.'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import {
+    emptyInputError,
+    localStorageUrlsKey,
+    urlsMutationKey,
+} from './constants'
+import { IUrls } from '@/app/types'
 
 const UrlFormSection = () => {
-    const context = useUrlContext()
+    const queryClient = useQueryClient()
     const [url, setUrl] = useState('')
     const [error, setError] = useState('')
+
+    const submitForm = async (url: string) => {
+        const response = await fetch('api', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url: encodeURI(url) }),
+        })
+        return await response.json()
+    }
+    const { isPending, mutate } = useMutation({
+        mutationKey: [urlsMutationKey],
+        mutationFn: submitForm,
+        onError: (error) => {
+            setError(error.message)
+        },
+        onSuccess: (data) => {
+            const urlsToStore = {
+                originalUrl: url,
+                shortUrl: data.result_url,
+            }
+            queryClient.setQueryData([urlsMutationKey], (prevData: IUrls[]) => {
+                const existingData = Array.isArray(prevData) ? prevData : []
+                const newData = [...existingData, urlsToStore]
+                localStorage.setItem(
+                    localStorageUrlsKey,
+                    JSON.stringify(newData)
+                )
+                return newData
+            })
+            setUrl('')
+        },
+    })
 
     const handleInputChange = (url: string) => {
         setError('')
@@ -22,26 +58,7 @@ const UrlFormSection = () => {
             return
         }
 
-        const response = await fetch('api', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ url: encodeURI(url) }),
-        })
-        const result = await response.json()
-
-        if (result.error) {
-            setError(result.error)
-            return
-        }
-        const urlsToStore = {
-            originalUrl: url,
-            shortUrl: result.result_url as string,
-        }
-
-        if (context) {
-            context.addUrl(urlsToStore)
-            setUrl('')
-        }
+        await mutate(url)
     }
 
     return (
@@ -64,7 +81,7 @@ const UrlFormSection = () => {
                         className="w-full rounded-md bg-teal-500 px-8 py-3 text-xl font-semibold text-white hover:bg-teal-300 sm:max-w-48"
                         type="submit"
                     >
-                        Shorten it!
+                        {isPending ? 'Submitting...' : 'Shorten it!'}
                     </button>
                 </div>
                 {error && (
