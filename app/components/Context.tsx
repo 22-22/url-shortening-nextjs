@@ -30,13 +30,13 @@ export const UrlProvider = ({ children }: UrlProviderProps) => {
 
     useEffect(() => {
         const storedData = localStorage.getItem(LocalStorageUrlsKey)
-        if (storedData) {
+        if (storedData && storedData.length > 0) {
             setUrlsData(JSON.parse(storedData))
         }
     }, [])
 
     useEffect(() => {
-        if (urlsData) {
+        if (urlsData.length > 0) {
             localStorage.setItem(LocalStorageUrlsKey, JSON.stringify(urlsData))
         }
     }, [urlsData])
